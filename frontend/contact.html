@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - AI Architecture Design Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Contact Page Specific Styles */
+        .contact-section {
+            min-height: 100vh;
+            padding: 100px 20px 60px;
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(26, 31, 58, 0.95));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .contact-header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .contact-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        /* Contact Form */
+        .contact-form-wrapper {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .contact-form {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-group.focused label {
+            color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="phone"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            outline: none;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="phone"]::placeholder,
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="phone"]:focus,
+        textarea:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out 0.5s backwards;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Contact Info */
+        .contact-info-wrapper {
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .contact-info {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 1.5rem;
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+
+        .info-item:nth-child(1) { animation-delay: 0.1s; }
+        .info-item:nth-child(2) { animation-delay: 0.2s; }
+        .info-item:nth-child(3) { animation-delay: 0.3s; }
+        .info-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .info-icon {
+            width: 50px;
+            min-width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all var(--transition-fast);
+        }
+
+        .info-item:hover .info-icon {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+        }
+
+        .info-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .info-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .info-content a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            animation: slideInUp 0.6s ease-out 0.5s backwards;
+        }
+
+        .social-link:hover {
+            background: var(--accent-color);
+            color: #0a0e27;
+            transform: translateY(-5px);
+        }
+
+        /* Map Container */
+        .map-container {
+            width: 100%;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out 0.6s backwards;
+        }
+
+        .map-placeholder {
+            text-align: center;
+        }
+
+        .map-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .map-placeholder p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Animated Background */
+        .contact-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-blob {
+            position: absolute;
+            mix-blend-mode: screen;
+            opacity: 0.2;
+            filter: blur(80px);
+            animation: blobAnimation 8s infinite;
+        }
+
+        .bg-blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            top: -10%;
+            right: -5%;
+        }
+
+        .bg-blob-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            bottom: -10%;
+            left: -5%;
+            animation-delay: -4s;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: slideInUp 0.5s ease-out;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .contact-section {
+                padding: 80px 20px 40px;
+            }
+
+            .contact-header h1 {
+                font-size: 2rem;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-form,
+            .contact-info {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .contact-form,
+            .contact-info {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="contact-background">
+        <div class="bg-blob bg-blob-1"></div>
+        <div class="bg-blob bg-blob-2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">ArchAI</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#features" class="nav-link">Features</a></li>
+                <li><a href="login.html" class="nav-link">Login</a></li>
+                <li><a href="contact.html" class="nav-link active">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-header">
+            <h1>Get In Touch</h1>
+            <p>Have questions about our AI-powered design generator? We'd love to hear from you. Reach out with any inquiries or feedback.</p>
+        </div>
+
+        <div class="contact-container">
+            <!-- Contact Form -->
+            <div class="contact-form-wrapper">
+                <form class="contact-form" id="contactForm">
+                    <div class="success-message" id="successMessage">
+                        Thank you! We'll get back to you soon.
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Your name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="your@email.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input 
+                            type="phone" 
+                            id="phone" 
+                            name="phone" 
+                            placeholder="+1 (555) 123-4567"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input 
+                            type="text" 
+                            id="subject" 
+                            name="subject" 
+                            placeholder="How can we help?"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            placeholder="Tell us more about your project or inquiry..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Send Message</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="contact-info-wrapper">
+                <div class="contact-info">
+                    <!-- Email -->
+                    <div class="info-item">
+                        <div class="info-icon">✉️</div>
+                        <div class="info-content">
+                            <h3>Email</h3>
+                            <p><a href="mailto:info@archai.com">info@archai.com</a></p>
+                            <p><a href="mailto:support@archai.com">support@archai.com</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <h3>Phone</h3>
+                            <p><a href="tel:+1(555)123-4567">+1 (555) 123-4567</a></p>
+                            <p><a href="tel:+1(555)987-6543">+1 (555) 987-6543</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Office -->
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <h3>Office</h3>
+                            <p>123 Architecture Drive<br>Design City, DC 12345<br>United States</p>
+                        </div>
+                    </div>
+
+                    <!-- Hours -->
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div class="info-content">
+                            <h3>Business Hours</h3>
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div style="margin-top: 1rem; padding-top: 2rem; border-top: 1px solid rgba(0, 212, 255, 0.2);">
+                        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Follow Us</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Twitter">𝕏</a>
+                            <a href="#" class="social-link" title="LinkedIn">in</a>
+                            <a href="#" class="social-link" title="GitHub">⚡</a>
+                            <a href="#" class="social-link" title="Facebook">f</a>
+                        </div>
+                    </div>
+
+                    <!-- Map Placeholder -->
+                    <div class="map-container" style="margin-top: 1rem;">
+                        <div class="map-placeholder">
+                            <div class="map-placeholder-icon">🗺️</div>
+                            <p style="margin: 0;">Interactive Map</p>
+                            <p style="font-size: 0.85rem; margin-top: 0.3rem;">Embed your location map here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Backend API Configuration
+        const BACKEND_URL = localStorage.getItem('apiUrl') || 'http://localhost:8000';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Contact page loaded. Backend URL:', BACKEND_URL);
+        });
+
+        // Contact form handling
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            // Validate form
+            if (!name || !email || !subject || !message) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+
+            // Show loading state
+            const btn = document.querySelector('.submit-btn');
+            const btnText = btn.querySelector('.btn-text') || btn;
+            const originalText = btnText.textContent;
+            btn.disabled = true;
+            btnText.textContent = 'Sending...';
+
+            try {
+                // Call API to send contact form
+                console.log('Sending contact form:', { name, email, subject });
+                const result = await API.sendContact({
+                    name,
+                    email,
+                    phone,
+                    subject,
+                    message
+                });
+
+                if (result.success) {
+                    // Show success message
+                    document.getElementById('successMessage').classList.add('show');
+                    showNotification('Message sent successfully!', 'success');
+
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                    btn.disabled = false;
+                    btnText.textContent = originalText;
+
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('successMessage').classList.remove('show');
+                    }, 5000);
+                } else {
+                    // Show error (could be that endpoint doesn't exist yet)
+                    const errorMsg = result.error || 'Failed to send message. Please try again or contact us directly.';
+                    showNotification(errorMsg, 'error');
+                    btn.disabled = false;
+                    btnText.textContent = originalText;
+                    
+                    // Still reset form in case it was queued
+                    console.log('Contact submission result:', result);
+                }
+            } catch (error) {
+                console.error('Contact form error:', error);
+                showNotification('An error occurred. Please try again later.', 'error');
+                btn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        });
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${type === 'success' ? 'rgba(0, 212, 255, 0.2)' : type === 'error' ? 'rgba(255, 68, 68, 0.2)' : 'rgba(0, 102, 255, 0.2)'};
+                border: 1px solid ${type === 'success' ? 'var(--accent-color)' : type === 'error' ? '#ff4444' : '#0066ff'};
+                color: ${type === 'success' ? 'var(--accent-color)' : type === 'error' ? '#ff4444' : '#0066ff'};
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        // Form animations on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.parentElement.classList.add('focused');
+                });
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

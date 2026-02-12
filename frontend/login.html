@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Architecture Design Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Login Page Specific Styles */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            z-index: 10;
+        }
+
+        .login-card {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-group.focused label {
+            color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            outline: none;
+        }
+
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder,
+        input[type="text"]::placeholder {
+            color: var(--text-secondary);
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all var(--transition-fast);
+            padding: 5px;
+        }
+
+        .password-toggle:hover {
+            transform: scale(1.2);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent-color);
+        }
+
+        .remember-check label {
+            margin: 0;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .forgot-password {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+            color: var(--primary-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out 0.5s backwards;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            opacity: 0.5;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            animation: slideInUp 0.6s ease-out 0.6s backwards;
+        }
+
+        .signup-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+
+        .signup-link a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* Animated Background */
+        .login-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-blob-1, .bg-blob-2, .bg-blob-3 {
+            position: absolute;
+            mix-blend-mode: screen;
+            opacity: 0.3;
+            filter: blur(80px);
+            animation: blobAnimation 8s infinite;
+        }
+
+        .bg-blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            top: -10%;
+            right: -5%;
+        }
+
+        .bg-blob-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            bottom: -10%;
+            left: -5%;
+            animation-delay: -4s;
+        }
+
+        .bg-blob-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            top: 50%;
+            left: 50%;
+            animation-delay: -2s;
+        }
+
+        .navbar {
+            background: rgba(10, 14, 39, 0.6);
+        }
+
+        /* Loading State */
+        .form-group.loading input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Error State */
+        .form-group.error input {
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        /* Success State */
+        .success-message {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: slideInUp 0.5s ease-out;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+                border-radius: 15px;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="login-background">
+        <div class="bg-blob-1"></div>
+        <div class="bg-blob-2"></div>
+        <div class="bg-blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">ArchAI</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#features" class="nav-link">Features</a></li>
+                <li><a href="login.html" class="nav-link active">Login</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Login Mode -->
+            <div id="loginMode" class="auth-mode">
+                <div class="login-header">
+                    <div class="login-logo">🏗️</div>
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to access your architectural projects</p>
+                </div>
+
+                <!-- Success Message -->
+                <div class="success-message" id="successMessage">
+                    Login successful! Redirecting...
+                </div>
+
+                <form id="loginForm">
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="email" 
+                                id="loginEmail" 
+                                name="email" 
+                                placeholder="you@example.com" 
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                        <div class="error-message">Please enter a valid email address</div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="password" 
+                                id="loginPassword" 
+                                name="password" 
+                                placeholder="••••••••" 
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                data-toggle="loginPassword"
+                                onclick="togglePasswordVisibility('loginPassword')"
+                                aria-label="Toggle password visibility"
+                            >
+                                👁
+                            </button>
+                        </div>
+                        <div class="error-message">Password must be at least 8 characters</div>
+                    </div>
+
+                    <!-- Remember & Forgot -->
+                    <div class="remember-forgot">
+                        <div class="remember-check">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="login-btn">
+                        <span class="btn-text">Sign In</span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>New to ArchAI?</span>
+                    </div>
+
+                    <!-- Switch to Signup -->
+                    <div class="signup-link">
+                        Don't have an account? <a onclick="switchToSignup(event)">Sign up</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Signup Mode -->
+            <div id="signupMode" class="auth-mode" style="display: none;">
+                <div class="login-header">
+                    <div class="login-logo">✨</div>
+                    <h1>Create Account</h1>
+                    <p>Join ArchAI and start designing smarter</p>
+                </div>
+
+                <!-- Success Message -->
+                <div class="success-message" id="successMessageSignup">
+                    Account created! Logging you in...
+                </div>
+
+                <form id="signupForm">
+                    <!-- Full Name Field -->
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="signupName" 
+                                name="fullName" 
+                                placeholder="John Doe" 
+                                required
+                            >
+                        </div>
+                        <div class="error-message">Please enter your full name</div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="email" 
+                                id="signupEmail" 
+                                name="email" 
+                                placeholder="you@example.com" 
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                        <div class="error-message">Please enter a valid email address</div>
+                    </div>
+
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="signupUsername">Username</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="signupUsername" 
+                                name="username" 
+                                placeholder="johndoe" 
+                                required
+                            >
+                        </div>
+                        <div class="error-message">Username must be at least 3 characters</div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="password" 
+                                id="signupPassword" 
+                                name="password" 
+                                placeholder="••••••••" 
+                                required
+                                autocomplete="new-password"
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                data-toggle="signupPassword"
+                                onclick="togglePasswordVisibility('signupPassword')"
+                                aria-label="Toggle password visibility"
+                            >
+                                👁
+                            </button>
+                        </div>
+                        <div class="error-message">Password must be at least 8 characters</div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <div class="remember-check">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">I agree to the Terms of Service</label>
+                        </div>
+                    </div>
+
+                    <!-- Signup Button -->
+                    <button type="submit" class="login-btn">
+                        <span class="btn-text">Create Account</span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>Already have an account?</span>
+                    </div>
+
+                    <!-- Switch to Login -->
+                    <div class="signup-link">
+                        <a onclick="switchToLogin(event)">Sign in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Backend API Configuration
+        const BACKEND_URL = localStorage.getItem('apiUrl') || 'http://localhost:8000';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Login page loaded. Backend URL:', BACKEND_URL);
+            
+            // Check if already logged in
+            if (AUTH && AUTH.isAuthenticated()) {
+                showNotification('You are already logged in!', 'info');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+
+            // Setup form animations
+            setupFormAnimations();
+        });
+
+        // Switch to Signup Mode
+        function switchToSignup(event) {
+            event.preventDefault();
+            document.getElementById('loginMode').style.display = 'none';
+            document.getElementById('signupMode').style.display = 'block';
+            document.getElementById('loginForm').reset();
+            setupFormAnimations();
+        }
+
+        // Switch to Login Mode
+        function switchToLogin(event) {
+            event.preventDefault();
+            document.getElementById('loginMode').style.display = 'block';
+            document.getElementById('signupMode').style.display = 'none';
+            document.getElementById('signupForm').reset();
+            setupFormAnimations();
+        }
+
+        // Setup form animations
+        function setupFormAnimations() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    const parent = this.parentElement?.parentElement;
+                    if (parent) parent.classList.add('focused');
+                });
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        const parent = this.parentElement?.parentElement;
+                        if (parent) parent.classList.remove('focused');
+                    }
+                });
+            });
+        }
+
+        // Toggle password visibility with visual feedback
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const button = document.querySelector(`[data-toggle="${fieldId}"]`);
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                if (button) button.textContent = '👁‍🗨';  // Eye with slash when showing
+            } else {
+                field.type = 'password';
+                if (button) button.textContent = '👁';  // Regular eye when hiding
+            }
+        }
+
+        // ===================== LOGIN FORM =====================
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('remember').checked;
+
+            // Validate form
+            if (!email || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+
+            if (password.length < 8) {
+                showNotification('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            // Show loading state
+            const btn = document.querySelector('#loginForm .login-btn');
+            const btnText = btn.querySelector('.btn-text');
+            const originalText = btnText.textContent;
+            btn.disabled = true;
+            btnText.textContent = 'Signing in...';
+
+            try {
+                // Call API login
+                console.log('Attempting login for:', email);
+                const result = await API.login(email, password);
+
+                if (result.success) {
+                    showNotification('Login successful!', 'success');
+                    document.getElementById('successMessage').classList.add('show');
+
+                    // Store remember me preference
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+
+                    // Redirect after success
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showNotification(result.error || 'Login failed. Please try again.', 'error');
+                    btn.disabled = false;
+                    btnText.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+                btn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        });
+
+        // ===================== SIGNUP FORM =====================
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const termsAccepted = document.getElementById('terms').checked;
+
+            // Validate form
+            if (!fullName || !email || !username || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (fullName.length < 2) {
+                showNotification('Please enter a valid name', 'error');
+                return;
+            }
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+
+            if (username.length < 3) {
+                showNotification('Username must be at least 3 characters', 'error');
+                return;
+            }
+
+            if (password.length < 8) {
+                showNotification('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            if (!termsAccepted) {
+                showNotification('Please accept the Terms of Service', 'error');
+                return;
+            }
+
+            // Show loading state
+            const btn = document.querySelector('#signupForm .login-btn');
+            const btnText = btn.querySelector('.btn-text');
+            const originalText = btnText.textContent;
+            btn.disabled = true;
+            btnText.textContent = 'Creating Account...';
+
+            try {
+                // Check if backend is running first
+                try {
+                    const healthCheck = await fetch(`${BACKEND_URL}/health`);
+                    if (!healthCheck.ok) {
+                        throw new Error('Backend not responding');
+                    }
+                } catch (e) {
+                    showNotification('Cannot connect to backend. Please ensure the server is running on port 8000.', 'error');
+                    btn.disabled = false;
+                    btnText.textContent = originalText;
+                    console.error('Backend health check failed:', e);
+                    return;
+                }
+
+                // Call API register
+                console.log('Attempting signup for:', email);
+                const result = await API.register({
+                    email,
+                    username,
+                    password,
+                    full_name: fullName
+                });
+
+                if (result.success) {
+                    showNotification('Account created successfully!', 'success');
+                    document.getElementById('successMessageSignup').classList.add('show');
+
+                    // Automatically login after signup
+                    setTimeout(async () => {
+                        const loginResult = await API.login(email, password);
+                        if (loginResult.success) {
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 500);
+                        } else {
+                            showNotification('Account created! Please login now.', 'info');
+                            setTimeout(() => switchToLogin({preventDefault: () => {}}), 1000);
+                        }
+                    }, 1000);
+                } else {
+                    // Show specific error message from backend
+                    const errorMsg = result.error || 'Signup failed. Please try again.';
+                    console.error('Signup error:', errorMsg);
+                    showNotification(errorMsg, 'error');
+                    btn.disabled = false;
+                    btnText.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showNotification('An error occurred: ' + error.message, 'error');
+                btn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        });
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'rgba(0, 212, 255, 0.2)' : type === 'error' ? 'rgba(255, 68, 68, 0.2)' : 'rgba(0, 102, 255, 0.2)'};
+                border: 1px solid ${type === 'success' ? 'var(--accent-color)' : type === 'error' ? '#ff4444' : '#0066ff'};
+                color: ${type === 'success' ? 'var(--accent-color)' : type === 'error' ? '#ff4444' : '#0066ff'};
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+                font-weight: 500;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 4000);
+        }
+    </script>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

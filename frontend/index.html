@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Architecture Design Generator - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Auth & API Config Styles */
+        .user-menu {
+            display: flex !important;
+            gap: 1rem;
+            align-items: center;
+            padding-left: 2rem;
+            border-left: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .user-name {
+            color: var(--accent-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff4444, #ff6666);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            font-size: 0.85rem;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        /* API Config Modal */
+        .api-config-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .api-config-modal.show {
+            display: flex;
+        }
+
+        .api-config-content {
+            background: rgba(26, 31, 58, 0.95);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .api-config-content h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .api-config-content label {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .api-config-content input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-family: 'Courier New', monospace;
+            transition: all var(--transition-fast);
+            box-sizing: border-box;
+        }
+
+        .api-config-content input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        .api-config-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .api-config-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+
+        .api-config-btn.save {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .api-config-btn.save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+        }
+
+        .api-config-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .api-config-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">ArchAI</span>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="login.html" class="nav-link login-link">Login</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li style="display: none;" class="user-menu">
+                    <span class="user-name" id="userName"></span>
+                    <button onclick="logout()" class="logout-btn">Logout</button>
+                </li>
+                <li>
+                    <button onclick="showApiConfig()" class="nav-link" style="background: none; border: none; cursor: pointer; padding: 0;">⚙️</button>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="animated-bg">
+            <div class="gradient-blob blob-1"></div>
+            <div class="gradient-blob blob-2"></div>
+            <div class="gradient-blob blob-3"></div>
+        </div>
+
+        <div class="hero-content">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+
+            <h1 class="hero-title">
+                <span class="word">AI-Powered</span>
+                <span class="word">Conceptual</span>
+                <span class="word">Design</span>
+                <span class="word highlight">Generator</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Revolutionizing architectural design with cutting-edge diffusion models. 
+                Generate stunning conceptual designs, analyze environmental impact, and validate compliance — 
+                all powered by artificial intelligence.
+            </p>
+
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToFeatures()">
+                    <span class="btn-text">Get Started</span>
+                    <span class="ripple"></span>
+                </button>
+                <button class="btn btn-secondary">
+                    <span class="btn-text">Learn More</span>
+                </button>
+            </div>
+
+            <div class="scroll-indicator">
+                <div class="mouse">
+                    <div class="wheel"></div>
+                </div>
+                <p>Scroll to explore</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Harness the power of AI for architectural excellence</p>
+
+            <div class="features-grid">
+                <!-- Feature Card 1 -->
+                <div class="feature-card" data-aos="fadeInUp">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="30" r="15" fill="currentColor"/>
+                            <path d="M 30 50 Q 50 70 70 50" stroke="currentColor" stroke-width="3" fill="none"/>
+                            <path d="M 40 60 L 40 80" stroke="currentColor" stroke-width="3"/>
+                            <path d="M 60 60 L 60 80" stroke="currentColor" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <h3>AI Design Generation</h3>
+                    <p>Generate stunning architectural concepts using advanced diffusion models. Simply describe your vision and watch it come to life.</p>
+                    <ul class="feature-list">
+                        <li>Text-to-design generation</li>
+                        <li>Sketch-to-concept conversion</li>
+                        <li>Climate-aware designs</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div class="feature-card" data-aos="fadeInUp" style="transition-delay: 0.1s;">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="5" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3>Environmental Analysis</h3>
+                    <p>Comprehensive environmental assessment including sun exposure, ventilation, and energy efficiency scoring for sustainable designs.</p>
+                    <ul class="feature-list">
+                        <li>Sun exposure analysis</li>
+                        <li>Ventilation scoring</li>
+                        <li>Sustainability index</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div class="feature-card" data-aos="fadeInUp" style="transition-delay: 0.2s;">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="25" y="20" width="50" height="60" fill="none" stroke="currentColor" stroke-width="2" rx="5"/>
+                            <path d="M 35 35 L 65 35" stroke="currentColor" stroke-width="2"/>
+                            <path d="M 35 50 L 65 50" stroke="currentColor" stroke-width="2"/>
+                            <path d="M 35 65 L 55 65" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="30" cy="35" r="3" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3>Compliance Validation</h3>
+                    <p>Automatic validation against architectural standards, building codes, and regulatory requirements for instant compliance checking.</p>
+                    <ul class="feature-list">
+                        <li>Real-time validation</li>
+                        <li>Building code compliance</li>
+                        <li>Rule-based enforcement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-grid">
+                <div class="step" data-aos="fadeInUp">
+                    <div class="step-number">01</div>
+                    <h3>Define Your Project</h3>
+                    <p>Enter project details including location, climate zone, building type, and specific requirements.</p>
+                </div>
+                <div class="step" data-aos="fadeInUp">
+                    <div class="step-number">02</div>
+                    <h3>Generate Designs</h3>
+                    <p>Use AI to generate multiple conceptual design variations based on your specifications and preferences.</p>
+                </div>
+                <div class="step" data-aos="fadeInUp">
+                    <div class="step-number">03</div>
+                    <h3>Analyze Results</h3>
+                    <p>Get detailed environmental analysis and sustainability metrics for each generated design.</p>
+                </div>
+                <div class="step" data-aos="fadeInUp">
+                    <div class="step-number">04</div>
+                    <h3>Validate & Export</h3>
+                    <p>Check compliance with building codes and export your final designs in multiple formats.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Transform Your Architectural Process?</h2>
+            <p>Join architects and designers who are already using AI to create better buildings faster.</p>
+            <a href="login.html" class="btn btn-primary btn-large">
+                <span class="btn-text">Start Free Trial</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ArchAI</h4>
+                    <p>AI-Powered Conceptual Design Generator for Architects</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:info@archai.com">info@archai.com</a></li>
+                        <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">f</a>
+                        <a href="#" class="social-icon">𝕏</a>
+                        <a href="#" class="social-icon">in</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ArchAI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Initialize authentication UI and API configuration on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+            console.log('Current API URL:', getApiUrl());
+        });
+
+        // Update UI based on authentication state
+        function updateAuthUI() {
+            const isAuth = AUTH.isAuthenticated();
+            const user = AUTH.getUser();
+            const loginLink = document.querySelector('.login-link');
+            const userMenu = document.querySelector('.user-menu');
+
+            if (isAuth && user) {
+                // Hide login link, show user menu
+                if (loginLink) loginLink.parentElement.style.display = 'none';
+                if (userMenu) {
+                    userMenu.style.display = 'flex';
+                    const userNameEl = document.getElementById('userName');
+                    if (userNameEl) {
+                        userNameEl.textContent = `Hi, ${(user.full_name || user.email || 'User').split(' ')[0]}!`;
+                    }
+                }
+                console.log('User logged in:', user);
+            } else {
+                // Show login link, hide user menu
+                if (loginLink) loginLink.parentElement.style.display = 'list-item';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                API.logout();
+                updateAuthUI();
+                showNotification('Logged out successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }
+        }
+
+        // Show API Configuration Modal
+        function showApiConfig() {
+            // Create modal if it doesn't exist
+            let modal = document.getElementById('apiConfigModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'apiConfigModal';
+                modal.className = 'api-config-modal';
+                modal.innerHTML = `
+                    <div class="api-config-content">
+                        <h2>⚙️ Backend Configuration</h2>
+                        <label for="apiUrlInput">Backend API URL:</label>
+                        <input 
+                            type="text" 
+                            id="apiUrlInput" 
+                            placeholder="http://localhost:8000"
+                            value="${getApiUrl()}"
+                        >
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                            Change this URL if your backend is running on a different server.
+                        </p>
+                        <div class="api-config-buttons">
+                            <button class="api-config-btn cancel" onclick="closeApiConfig()">Cancel</button>
+                            <button class="api-config-btn save" onclick="saveApiConfig()">Save</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Close on background click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeApiConfig();
+                });
+            }
+
+            // Update input value and show modal
+            document.getElementById('apiUrlInput').value = getApiUrl();
+            modal.classList.add('show');
+        }
+
+        // Close API Configuration Modal
+        function closeApiConfig() {
+            const modal = document.getElementById('apiConfigModal');
+            if (modal) modal.classList.remove('show');
+        }
+
+        // Save API Configuration
+        function saveApiConfig() {
+            const input = document.getElementById('apiUrlInput');
+            const url = input.value.trim();
+
+            if (!url) {
+                showNotification('Please enter a valid URL', 'error');
+                return;
+            }
+
+            // Basic URL validation
+            try {
+                new URL(url);
+            } catch (e) {
+                showNotification('Please enter a valid URL (e.g., http://localhost:8000)', 'error');
+                return;
+            }
+
+            setApiUrl(url);
+            showNotification('API URL saved successfully!', 'success');
+            closeApiConfig();
+        }
+
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'rgba(0, 212, 255, 0.2)' : type === 'error' ? 'rgba(255, 68, 68, 0.2)' : 'rgba(0, 102, 255, 0.2)'};
+                border: 1px solid ${type === 'success' ? 'var(--accent-color)' : type === 'error' ? '#ff4444' : '#0066ff'};
+                color: ${type === 'success' ? 'var(--accent-color)' : type === 'error' ? '#ff4444' : '#0066ff'};
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        // Allow Enter key to save in API config
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const modal = document.getElementById('apiConfigModal');
+                if (modal && modal.classList.contains('show')) {
+                    saveApiConfig();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
